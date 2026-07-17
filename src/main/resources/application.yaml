@@ -1,3 +1,36 @@
 spring:
   application:
     name: Teamply
+
+  # 데이터베이스 연결 설정 추가
+  datasource:
+    url: jdbc:mysql://localhost:3307/teamply_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+jwt:
+  secret: teamply-super-secret-key-please-change-this-to-a-long-random-string-at-least-32-bytes
+  access-token-expiration: 1800000
+  refresh-token-expiration: 1209600000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  access-token-expiration: 1800000
+  refresh-token-expiration: 1209600000

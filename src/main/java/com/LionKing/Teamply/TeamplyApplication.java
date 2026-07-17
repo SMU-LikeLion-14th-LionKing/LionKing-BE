@@ -2,12 +2,12 @@ package com.LionKing.Teamply;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+@EnableJpaAuditing
 @SpringBootApplication
 public class TeamplyApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(TeamplyApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(TeamplyApplication.class, args);
+    }
 }
