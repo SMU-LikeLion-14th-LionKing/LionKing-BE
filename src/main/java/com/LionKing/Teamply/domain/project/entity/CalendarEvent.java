@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "calendar_events")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class CalendarEvent {
 
     @Id
@@ -23,13 +26,17 @@ public class CalendarEvent {
     private Project project;
 
     @Column(name = "event_type", length = 50)
-    private String eventType; // 회의/마감/작업
+    private String eventType;
 
     @Column(length = 255)
     private String title;
 
     @Column(name = "event_date")
     private LocalDateTime eventDate;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     @Builder
     public CalendarEvent(Project project, String eventType, String title, LocalDateTime eventDate) {
