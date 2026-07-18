@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectMember {
 
-    public static final String ROLE_LEADER = "팀장";
-    public static final String ROLE_MEMBER = "팀원";
+    public static final String ROLE_LEADER = "LEADER";
+    public static final String ROLE_MEMBER = "MEMBER";
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +29,9 @@ public class ProjectMember {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @Column(length = 255)
-    private String role; // 팀장 / 팀원
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    private ProjectRole role; // 팀장 / 팀원
 
     @Column(length = 255)
     private String position; // 팀원이 직접 입력하는 역할
@@ -39,7 +40,7 @@ public class ProjectMember {
     private LocalDateTime joinedAt;
 
     @Builder
-    public ProjectMember(User user, Project project, String role) {
+    public ProjectMember(User user, Project project, ProjectRole role) {
         this.user = user;
         this.project = project;
         this.role = role;
@@ -47,10 +48,10 @@ public class ProjectMember {
     }
 
     public boolean isLeader() {
-        return ROLE_LEADER.equals(this.role);
+        return this.role == ProjectRole.LEADER;
     }
 
-    public void updateRole(String role) {
+    public void updateRole(ProjectRole role) {
         this.role = role;
     }
 

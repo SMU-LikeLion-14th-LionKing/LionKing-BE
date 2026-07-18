@@ -24,20 +24,21 @@ public class TeamService {
     private final UserRepository userRepository;
 
     // 팀 선택 (프로젝트 단건 조회)
-    public ProjectResponse getProject(Long projectId, Long userId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
-        ProjectMember member = projectMemberRepository.findByUserAndProject(
-                        userRepository.getReferenceById(userId), project)
-                .orElseThrow(() -> new IllegalStateException("접근 권한이 없습니다."));
-        return ProjectResponse.of(project, member.getRole());
+    public ProjectSelectResponse getProject(Long projectId, Long userId) {
+        // 접근 권한 확인까지 한 번에 처리
+        ProjectMember member = getMemberOrThrow(projectId, userId);
+        return ProjectSelectResponse.from(member.getProject());
     }
 
     // 팀원 추가
     @Transactional
-    public ProjectMemberResponse inviteMember(Long projectId, ProjectMemberInviteRequest request) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+    public ProjectMemberInviteResponse inviteMember(Long projectId, ProjectMemberInviteRequest request) {
+        Project project = getProjectOrThrow(projectId);
+
+        if (!project.getName().equals(request.teamName())) {
+            throw new IllegalArgumentException("팀 이름이 일치하지 않습니다.");
+        }
+
         User invitee = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 이메일입니다."));
 
@@ -48,45 +49,36 @@ public class TeamService {
         ProjectMember member = ProjectMember.builder()
                 .user(invitee)
                 .project(project)
-                .role(ProjectMember.ROLE_MEMBER)
+                .role(ProjectRole.MEMBER)
                 .build();
         projectMemberRepository.save(member);
-        return ProjectMemberResponse.from(member);
+        return ProjectMemberInviteResponse.from(member);
     }
 
     // 팀원 목록 조회
-    public List<ProjectMemberResponse> getMembers(Long projectId) {
+    public List<ProjectMemberListResponse> getMembers(Long projectId) {
         return projectMemberRepository.findByProjectId(projectId).stream()
-                .map(ProjectMemberResponse::from)
+                .map(ProjectMemberListResponse::from)
                 .toList();
     }
 
     // 팀원 수정 (역할/포지션 변경)
     @Transactional
-    public ProjectMemberResponse updateMember(Long projectId, ProjectMemberUpdateRequest request) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
-        User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        ProjectMember member = projectMemberRepository.findByUserAndProject(user, project)
-                .orElseThrow(() -> new IllegalArgumentException("팀원이 아닙니다."));
+    public void updateMember(Long projectId, Long userId, ProjectMemberUpdateRequest request) {
+        ProjectMember member = getMemberOrThrow(projectId, userId);
 
-        if (request.role() != null) member.updateRole(request.role());
-        if (request.position() != null) member.updatePosition(request.position());
-
-        return ProjectMemberResponse.from(member);
+        if (request.permission() != null) {
+            member.updateRole(parseRole(request.permission()));
+        }
+        if (request.roleDescription() != null) {
+            member.updatePosition(request.roleDescription());
+        }
     }
 
     // 팀원 삭제
     @Transactional
     public void removeMember(Long projectId, Long userId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        ProjectMember member = projectMemberRepository.findByUserAndProject(user, project)
-                .orElseThrow(() -> new IllegalArgumentException("팀원이 아닙니다."));
-
+        ProjectMember member = getMemberOrThrow(projectId, userId);
         projectMemberRepository.delete(member);
     }
 
@@ -100,8 +92,7 @@ public class TeamService {
     // 팀 워크스페이스 추가
     @Transactional
     public ProjectLinkResponse addWorkspace(Long projectId, ProjectLinkCreateRequest request) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+        Project project = getProjectOrThrow(projectId);
 
         ProjectLink link = ProjectLink.builder()
                 .project(project)
@@ -121,9 +112,8 @@ public class TeamService {
 
     // 팀 캘린더 일정 추가
     @Transactional
-    public CalendarEventResponse addCalendarEvent(Long projectId, CalendarEventCreateRequest request) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+    public CalendarEventCreateResponse addCalendarEvent(Long projectId, CalendarEventCreateRequest request) {
+        Project project = getProjectOrThrow(projectId);
 
         CalendarEvent event = CalendarEvent.builder()
                 .project(project)
@@ -132,6 +122,31 @@ public class TeamService {
                 .eventDate(request.eventDate())
                 .build();
         calendarEventRepository.save(event);
-        return CalendarEventResponse.from(event);
+        return CalendarEventCreateResponse.from(event);
+    }
+
+    private Project getProjectOrThrow(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+    }
+
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    }
+
+    private ProjectMember getMemberOrThrow(Long projectId, Long userId) {
+        Project project = getProjectOrThrow(projectId);
+        User user = getUserOrThrow(userId);
+        return projectMemberRepository.findByUserAndProject(user, project)
+                .orElseThrow(() -> new IllegalArgumentException("팀원이 아닙니다."));
+    }
+
+    private ProjectRole parseRole(String value) {
+        try {
+            return ProjectRole.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("유효하지 않은 권한 값입니다: " + value);
+        }
     }
 }
