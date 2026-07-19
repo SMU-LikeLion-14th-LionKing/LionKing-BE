@@ -15,7 +15,7 @@ public class ApiResponse<T> {
     @JsonProperty("isSuccess")
     private final boolean isSuccess;
 
-    private final int code;
+    private final String code;
     private final String message;
     private final T data;
 
@@ -25,18 +25,18 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> success(int code, String message, T data) {
-        return new ApiResponse<>(true, code, message, data);
+        return new ApiResponse<>(true, String.valueOf(code), message, data);
     }
 
     public static <T> ApiResponse<T> success(String message, T data) {
-        return new ApiResponse<>(true, 200, message, data);
+        return new ApiResponse<>(true, "200", message, data);
     }
 
     public static ApiResponse<Void> success(String message) {
-        return new ApiResponse<>(true, 200, message, null);
+        return new ApiResponse<>(true, "200", message, null);
     }
 
-    public static <T> ApiResponse<T> fail(int code, String message) {
+    public static <T> ApiResponse<T> fail(String code, String message) {
         return new ApiResponse<>(false, code, message, null);
     }
 }
