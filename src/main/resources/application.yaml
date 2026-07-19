@@ -4,7 +4,7 @@ spring:
 
   # 데이터베이스 연결 설정 추가
   datasource:
-    url: jdbc:mysql://localhost:3307/teamply_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:${DB_PORT:3307}/teamply_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
