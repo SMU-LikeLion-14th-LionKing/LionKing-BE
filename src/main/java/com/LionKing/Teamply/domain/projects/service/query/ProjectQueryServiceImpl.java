@@ -31,7 +31,7 @@ public class ProjectQueryServiceImpl implements ProjectQueryService{
     @Override
     public List<ProjectsResDTO.ProjectGetRes> getProjects(String email) { // 리턴 타입을 List로 변경
         // 1. 레포지토리 메서드명 수정 (_Email)
-        List<Projects> projectList = projectsRepository.findAllByUserEmail(email);
+        List<Projects> projectList = projectsRepository.findAllByUser_Email(email);
         // 2. 컨버터에서 리스트용 변환 메서드 호출
         return ProjectConverter.toProjectGetResList(projectList);
     }

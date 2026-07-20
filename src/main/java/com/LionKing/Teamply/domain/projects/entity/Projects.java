@@ -20,6 +20,10 @@ public class Projects extends BaseTimeEntity {
     @Column(name = "project_Id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private com.LionKing.Teamply.domain.user.entity.User user;
+
     @Column(name = "project_Name")
     private String name;
 
