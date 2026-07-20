@@ -36,7 +36,7 @@ public class PostCommandServiceImpl implements PostCommandService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(GeneralErrorCode.NOT_FOUND_404));
 
-        Post post = PostConverter.toPost(req, project, user);
+        Post post = PostConverter.toNotice(req, project, user);
         Post savedPost = postRepository.save(post);
 
         return PostConverter.toNoticeCreateRes(savedPost);
