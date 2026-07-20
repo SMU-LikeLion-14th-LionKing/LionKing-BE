@@ -4,9 +4,9 @@ spring:
 
   # 데이터베이스 연결 설정 추가
   datasource:
-    url: jdbc:mysql://localhost:3307/teamply_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
+    url: ${DB_URL:jdbc:mysql://localhost:3307/teamply_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
 jwt:
-  secret: teamply-super-secret-key-please-change-this-to-a-long-random-string-at-least-32-bytes
+  secret: ${JWT_SECRET}
   access-token-expiration: 1800000
   refresh-token-expiration: 1209600000
 
