@@ -1,8 +1,8 @@
-package com.LionKing.Teamply.domain.projects.dto.request;
+package com.LionKing.Teamply.domain.project.dto.request;
 
 import java.time.LocalDateTime;
 
-public class ProjectsReqDTO {
+public class ProjectReqDTO {
 
     public record ProjectCreateReq(
             String name,
@@ -10,6 +10,5 @@ public class ProjectsReqDTO {
             String title,
             LocalDateTime deadline
     ){
-
     }
 }

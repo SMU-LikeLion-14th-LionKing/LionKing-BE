@@ -1,4 +1,4 @@
-package com.LionKing.Teamply.domain.project.service;
+package com.LionKing.Teamply.domain.project.service.command;
 
 import com.LionKing.Teamply.domain.project.dto.request.*;
 import com.LionKing.Teamply.domain.project.dto.response.*;
@@ -10,12 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class TeamService {
+@Transactional
+public class TeamCommandServiceImpl implements TeamCommandService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
@@ -23,15 +21,7 @@ public class TeamService {
     private final CalendarEventRepository calendarEventRepository;
     private final UserRepository userRepository;
 
-    // 팀 선택 (프로젝트 단건 조회)
-    public ProjectSelectResponse getProject(Long projectId, Long userId) {
-        // 접근 권한 확인까지 한 번에 처리
-        ProjectMember member = getMemberOrThrow(projectId, userId);
-        return ProjectSelectResponse.from(member.getProject());
-    }
-
-    // 팀원 추가
-    @Transactional
+    @Override
     public ProjectMemberInviteResponse inviteMember(Long projectId, ProjectMemberInviteRequest request) {
         Project project = getProjectOrThrow(projectId);
 
@@ -55,15 +45,7 @@ public class TeamService {
         return ProjectMemberInviteResponse.from(member);
     }
 
-    // 팀원 목록 조회
-    public List<ProjectMemberListResponse> getMembers(Long projectId) {
-        return projectMemberRepository.findByProjectId(projectId).stream()
-                .map(ProjectMemberListResponse::from)
-                .toList();
-    }
-
-    // 팀원 수정 (역할/포지션 변경)
-    @Transactional
+    @Override
     public void updateMember(Long projectId, Long userId, ProjectMemberUpdateRequest request) {
         ProjectMember member = getMemberOrThrow(projectId, userId);
 
@@ -75,22 +57,13 @@ public class TeamService {
         }
     }
 
-    // 팀원 삭제
-    @Transactional
+    @Override
     public void removeMember(Long projectId, Long userId) {
         ProjectMember member = getMemberOrThrow(projectId, userId);
         projectMemberRepository.delete(member);
     }
 
-    // 팀 워크스페이스 조회
-    public List<ProjectLinkResponse> getWorkspaces(Long projectId) {
-        return projectLinkRepository.findByProjectId(projectId).stream()
-                .map(ProjectLinkResponse::from)
-                .toList();
-    }
-
-    // 팀 워크스페이스 추가
-    @Transactional
+    @Override
     public ProjectLinkResponse addWorkspace(Long projectId, ProjectLinkCreateRequest request) {
         Project project = getProjectOrThrow(projectId);
 
@@ -103,15 +76,7 @@ public class TeamService {
         return ProjectLinkResponse.from(link);
     }
 
-    // 팀 캘린더 조회
-    public List<CalendarEventResponse> getCalendarEvents(Long projectId) {
-        return calendarEventRepository.findByProjectId(projectId).stream()
-                .map(CalendarEventResponse::from)
-                .toList();
-    }
-
-    // 팀 캘린더 일정 추가
-    @Transactional
+    @Override
     public CalendarEventCreateResponse addCalendarEvent(Long projectId, CalendarEventCreateRequest request) {
         Project project = getProjectOrThrow(projectId);
 

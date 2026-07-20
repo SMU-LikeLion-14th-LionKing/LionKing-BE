@@ -2,7 +2,8 @@ package com.LionKing.Teamply.domain.project.controller;
 
 import com.LionKing.Teamply.domain.project.dto.request.*;
 import com.LionKing.Teamply.domain.project.dto.response.*;
-import com.LionKing.Teamply.domain.project.service.TeamService;
+import com.LionKing.Teamply.domain.project.service.command.TeamCommandService;
+import com.LionKing.Teamply.domain.project.service.query.TeamQueryService;
 import com.LionKing.Teamply.global.common.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +22,8 @@ import java.util.List;
 @RequestMapping("/api/projects/{projectId}")
 public class TeamController {
 
-    private final TeamService teamService;
+    private final TeamCommandService teamCommandService;
+    private final TeamQueryService teamQueryService;
 
     // 1. 팀 선택
     @Operation(summary = "팀 선택", description = "참여 중인 프로젝트 팀 중 하나를 선택하여 상세 정보를 조회합니다.")
@@ -30,7 +32,7 @@ public class TeamController {
             @PathVariable Long projectId,
             @AuthenticationPrincipal Long userId
     ) {
-        ProjectSelectResponse response = teamService.getProject(projectId, userId);
+        ProjectSelectResponse response = teamQueryService.getProject(projectId, userId);
         return ResponseEntity.ok(ApiResponse.success(200, "프로젝트 정보 조회 성공", response));
     }
 
@@ -41,7 +43,7 @@ public class TeamController {
             @PathVariable Long projectId,
             @Valid @RequestBody ProjectMemberInviteRequest request
     ) {
-        ProjectMemberInviteResponse response = teamService.inviteMember(projectId, request);
+        ProjectMemberInviteResponse response = teamCommandService.inviteMember(projectId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(201, "팀원이 성공적으로 추가되었습니다.", response));
     }
@@ -50,7 +52,7 @@ public class TeamController {
     @Operation(summary = "팀 멤버 목록 조회", description = "프로젝트에 참여 중인 팀원 목록을 조회합니다.")
     @GetMapping("/members")
     public ResponseEntity<ApiResponse<List<ProjectMemberListResponse>>> getMembers(@PathVariable Long projectId) {
-        List<ProjectMemberListResponse> response = teamService.getMembers(projectId);
+        List<ProjectMemberListResponse> response = teamQueryService.getMembers(projectId);
         return ResponseEntity.ok(ApiResponse.success(200, "팀 멤버 목록 조회 성공", response));
     }
 
@@ -62,7 +64,7 @@ public class TeamController {
             @PathVariable Long userId,
             @RequestBody ProjectMemberUpdateRequest request
     ) {
-        teamService.updateMember(projectId, userId, request);
+        teamCommandService.updateMember(projectId, userId, request);
         return ResponseEntity.ok(ApiResponse.success(200, "팀원 역할이 수정되었습니다.", null));
     }
 
@@ -73,7 +75,7 @@ public class TeamController {
             @PathVariable Long projectId,
             @PathVariable Long userId
     ) {
-        teamService.removeMember(projectId, userId);
+        teamCommandService.removeMember(projectId, userId);
         return ResponseEntity.ok(ApiResponse.success(200, "해당 팀원이 프로젝트에서 제외되었습니다.", null));
     }
 
@@ -81,7 +83,7 @@ public class TeamController {
     @Operation(summary = "팀 워크스페이스 조회", description = "팀에 등록된 협업 툴(피그마, 노션 등) 링크 목록을 조회합니다.")
     @GetMapping("/workspaces")
     public ResponseEntity<ApiResponse<List<ProjectLinkResponse>>> getWorkspaces(@PathVariable Long projectId) {
-        List<ProjectLinkResponse> response = teamService.getWorkspaces(projectId);
+        List<ProjectLinkResponse> response = teamQueryService.getWorkspaces(projectId);
         return ResponseEntity.ok(ApiResponse.success(200, "워크스페이스 목록 조회 성공", response));
     }
 
@@ -92,7 +94,7 @@ public class TeamController {
             @PathVariable Long projectId,
             @RequestBody ProjectLinkCreateRequest request
     ) {
-        ProjectLinkResponse response = teamService.addWorkspace(projectId, request);
+        ProjectLinkResponse response = teamCommandService.addWorkspace(projectId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(201, "워크스페이스가 성공적으로 등록되었습니다.", response));
     }
@@ -101,7 +103,7 @@ public class TeamController {
     @Operation(summary = "팀 프로젝트 캘린더 조회", description = "팀의 회의/마감/작업 일정을 캘린더 형태로 조회합니다.")
     @GetMapping("/calendar")
     public ResponseEntity<ApiResponse<List<CalendarEventResponse>>> getCalendarEvents(@PathVariable Long projectId) {
-        List<CalendarEventResponse> response = teamService.getCalendarEvents(projectId);
+        List<CalendarEventResponse> response = teamQueryService.getCalendarEvents(projectId);
         return ResponseEntity.ok(ApiResponse.success(200, "월별 일정 조회 성공", response));
     }
 
@@ -112,7 +114,7 @@ public class TeamController {
             @PathVariable Long projectId,
             @RequestBody CalendarEventCreateRequest request
     ) {
-        CalendarEventCreateResponse response = teamService.addCalendarEvent(projectId, request);
+        CalendarEventCreateResponse response = teamCommandService.addCalendarEvent(projectId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(201, "일정이 성공적으로 추가되었습니다.", response));
     }

@@ -1,4 +1,4 @@
-package com.LionKing.Teamply.domain.projects.exception;
+package com.LionKing.Teamply.domain.project.exception;
 
 import com.LionKing.Teamply.global.apiPayload.code.BaseErrorCode;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ProjectErrorCode implements BaseErrorCode {
 
-    PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT404_1", "프로젝트를 찾을 수 없습니다.");
+    PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT404", "존재하지 않는 프로젝트입니다."),
+    PROJECT_FORBIDDEN(HttpStatus.FORBIDDEN, "PROJECT403", "해당 프로젝트에 대한 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
