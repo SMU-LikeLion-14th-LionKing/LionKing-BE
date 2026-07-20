@@ -9,7 +9,7 @@ import java.util.List;
 public class ProjectConverter {
 
     public static Projects toProject(ProjectsReqDTO.ProjectCreateReq req) {
-        return Projects.builder(
+        return Projects.builder()
                 .name(req.name())
                 .projectType(req.projectType())
                 .title(req.title())
