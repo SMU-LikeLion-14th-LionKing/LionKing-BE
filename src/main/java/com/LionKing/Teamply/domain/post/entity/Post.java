@@ -1,6 +1,6 @@
 package com.LionKing.Teamply.domain.post.entity;
 
-import com.LionKing.Teamply.domain.projects.entity.Projects;
+import com.LionKing.Teamply.domain.project.entity.Project;
 import com.LionKing.Teamply.domain.user.entity.User;
 import com.LionKing.Teamply.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -20,7 +20,7 @@ public class Post extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
-    private Projects project;
+    private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
