@@ -37,9 +37,8 @@ public class SecurityConfig {
                 // Form 로그인, HTTP Basic 비활성화
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                // 세션 사용 안 함 (JWT stateless)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 세션 
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 요청별 인증 규칙
                 .authorizeHttpRequests(auth -> auth
                         // Preflight 요청 허용
