@@ -175,4 +175,14 @@ public class PostCommandServiceImpl implements PostCommandService {
             throw new PostException(PostErrorCode.POST_FORBIDDEN);
         }
     }
+
+    @Override
+    public PostResDTO.FileDownloadUrlRes getFileDownloadUrl(Long fileId, Long userId) {
+        Attachment attachment = attachmentRepository.findById(fileId)
+                .orElseThrow(() -> new PostException(PostErrorCode.ATTACHMENT_NOT_FOUND));
+
+        String downloadUrl = fileStorageService.getDownloadUrl(attachment.getFileUrl());
+
+        return new PostResDTO.FileDownloadUrlRes(downloadUrl);
+    }
 }
