@@ -51,4 +51,19 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "external_url", length = 512)
     private String externalUrl;
+
+    /*--제목/본문 수정 --*/
+    public void updateContent(String title, String content) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
+
+    /*--작성자 검증 --*/
+    public boolean isAuthor(Long userId) {
+        return this.user != null && this.user.getId().equals(userId);
+    }
 }
