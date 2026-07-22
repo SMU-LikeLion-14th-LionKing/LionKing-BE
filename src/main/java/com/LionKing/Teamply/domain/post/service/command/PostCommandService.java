@@ -20,4 +20,7 @@ public interface PostCommandService {
     void deleteFile(Long fileId, Long userId);
 
     PostResDTO.NoticeCreateRes createNotice(Long projectId, Long userId, PostReqDTO.NoticeCreateReq req);
+
+    PostResDTO.FileDownloadUrlRes getFileDownloadUrl(Long fileId, Long userId);
+
 }
