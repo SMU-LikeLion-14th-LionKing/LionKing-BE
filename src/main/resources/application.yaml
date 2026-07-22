@@ -7,7 +7,7 @@ spring:
       host: localhost
       port: 6379
   datasource:
-    url: jdbc:mysql://localhost:3307/teamply_db
+    url: jdbc:mysql://localhost:3306/teamply_db
     username: root
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,6 +25,10 @@ jwt:
   secret: teamply-super-secret-key-please-change-this-to-a-long-random-string-at-least-32-bytes
   access-token-expiration: 1800000
   refresh-token-expiration: 1209600000
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
 
 springdoc:
   swagger-ui:
