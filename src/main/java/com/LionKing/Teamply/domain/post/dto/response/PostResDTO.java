@@ -82,4 +82,11 @@ public class PostResDTO {
     ) {
 
     }
+
+    /*--첨부파일 다운로드 URL 응답--*/
+    public record FileDownloadUrlRes(
+            String downloadUrl
+    ) {
+
+    }
 }

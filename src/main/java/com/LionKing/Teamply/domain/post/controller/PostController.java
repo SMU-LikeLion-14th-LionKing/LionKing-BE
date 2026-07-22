@@ -157,4 +157,14 @@ public class PostController {
         return ApiResponse.success("파일이 삭제되었습니다.");
     }
 
+    @GetMapping("/files/{fileId}/download-url")
+    @Operation(summary = "첨부파일 다운로드 URL 발급", description = "비공개 S3 버킷의 파일에 접근 가능한 임시 URL을 발급합니다.")
+    public ApiResponse<PostResDTO.FileDownloadUrlRes> getFileDownloadUrl(
+            @PathVariable Long fileId,
+            @AuthenticationPrincipal Long userId
+    ) {
+        return ApiResponse.success("다운로드 URL 발급 성공",
+                postCommandService.getFileDownloadUrl(fileId, userId));
+    }
+
 }
