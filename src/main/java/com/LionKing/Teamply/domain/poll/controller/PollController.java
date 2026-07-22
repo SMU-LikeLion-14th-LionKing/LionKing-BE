@@ -28,14 +28,14 @@ public class PollController {
 
     @Operation(summary = "투표 생성", description = "특정 게시글(Post) 내에 새로운 투표와 선택지들을 함께 생성합니다.")
     @PostMapping("/posts/{postId}/polls")
-    public ResponseEntity<ApiResponse<Long>> createPoll(
+    public ResponseEntity<ApiResponse<com.LionKing.Teamply.domain.poll.dto.response.PollResDTO.CreatePollRes>> createPoll(
             @PathVariable Long postId,
             @AuthenticationPrincipal Long userId,
             @Valid @RequestBody CreatePollReq request
     ) {
         Long pollId = pollCommandService.createPoll(postId, userId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(201, "투표가 성공적으로 생성되었습니다.", pollId));
+                .body(ApiResponse.success(201, "투표가 성공적으로 생성되었습니다.", new com.LionKing.Teamply.domain.poll.dto.response.PollResDTO.CreatePollRes(pollId)));
     }
 
     @Operation(summary = "투표 상세 조회", description = "투표 정보, 선택지 목록, 그리고 현재 로그인한 유저의 투표 여부를 조회합니다.")

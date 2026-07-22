@@ -30,7 +30,7 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String geminiApiKey;
 
-    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=";
+    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=";
 
     private String callGeminiApi(String prompt) {
         try {
@@ -101,7 +101,9 @@ public class GeminiService {
     }
 
     public ScheduleParseRes parseSchedules(String scheduleNotes) {
-        String prompt = "다음 텍스트에서 캘린더에 등록할 일정들을 추출해서 JSON 형식으로만 반환해줘.\n" +
+        String currentDate = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분"));
+        String prompt = "현재 시간은 " + currentDate + " 입니다. 이 시간을 기준으로 계산해서,\n" +
+                "다음 텍스트에서 캘린더에 등록할 일정들을 추출해서 JSON 형식으로만 반환해줘.\n" +
                 "날짜는 'yyyy-MM-ddTHH:mm:ss' 형식이어야 해.\n" +
                 "형식: {\"schedules\": [{\"title\": \"일정 제목\", \"startTime\": \"시작시간\", \"endTime\": \"종료시간\", \"memo\": \"기타 내용\"}]}\n" +
                 "텍스트 내용: " + scheduleNotes;

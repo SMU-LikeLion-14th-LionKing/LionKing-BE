@@ -5,6 +5,10 @@ import java.util.List;
 
 public record PollResDTO() {
 
+    public record CreatePollRes(
+            Long pollId
+    ) {}
+
     public record PollDetailRes(
             Long pollId,
             String question,
