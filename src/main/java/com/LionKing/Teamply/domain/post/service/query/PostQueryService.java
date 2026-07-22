@@ -10,4 +10,8 @@ public interface PostQueryService {
     Page<PostResDTO.NoticesGetRes> getNotices(Long projectId, int page, int size);
 
     List<PostResDTO.RecentNoticeRes> getRecentNotices(Long projectId);
+
+    Page<PostResDTO.PostListItemRes> getPosts(Long projectId, Long categoryId, int page, int size);
+
+    PostResDTO.PostDetailRes getPostDetail(Long postId);
 }

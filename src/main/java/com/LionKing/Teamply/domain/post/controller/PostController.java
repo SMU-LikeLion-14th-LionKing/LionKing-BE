@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -54,4 +55,106 @@ public class PostController {
         List<PostResDTO.RecentNoticeRes> res = postQueryService.getRecentNotices(projectId);
         return ApiResponse.success("최근 공지사항 조회 성공", res);
     }
+
+    /*--작업게시글--*/
+
+    @PostMapping("/projects/{projectId}/posts/task")
+    @Operation(summary = "작업 게시글 작성")
+    public ApiResponse<PostResDTO.PostCreateRes> createTask(
+            @PathVariable Long projectId,
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody PostReqDTO.TaskCreateReq req
+    ) {
+        return ApiResponse.success(201, "작업 게시글이 성공적으로 등록되었습니다.",
+                postCommandService.createTask(projectId, userId, req));
+    }
+
+    @PatchMapping("/posts/{postId}/task")
+    @Operation(summary = "작업 게시글 수정")
+    public ApiResponse<PostResDTO.PostUpdateRes> updateTask(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody PostReqDTO.PostUpdateReq req
+    ) {
+        return ApiResponse.success(200, "작업 게시글이 수정되었습니다.",
+                postCommandService.updateTask(postId, userId, req));
+    }
+
+    /*--질문게시글--*/
+    @PostMapping("/projects/{projectId}/posts/question")
+    @Operation(summary = "질문 게시글 작성")
+    public ApiResponse<PostResDTO.PostCreateRes> createQuestion(
+            @PathVariable Long projectId,
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody PostReqDTO.QuestionCreateReq req
+    ) {
+        return ApiResponse.success(201, "질문 게시글이 성공적으로 등록되었습니다.",
+                postCommandService.createQuestion(projectId, userId, req));
+    }
+
+    @PatchMapping("/posts/{postId}/question")
+    @Operation(summary = "질문 게시글 수정")
+    public ApiResponse<PostResDTO.PostUpdateRes> updateQuestion(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody PostReqDTO.PostUpdateReq req
+    ) {
+        return ApiResponse.success(200, "질문 게시글이 수정되었습니다.",
+                postCommandService.updateQuestion(postId, userId, req));
+    }
+
+    /*--게시글 목록/상세/삭제--*/
+    @GetMapping("/projects/{projectId}/posts")
+    @Operation(summary = "게시글 목록 조회", description = "카테고리별로 게시글을 페이징 조회합니다.")
+    public ApiResponse<Page<PostResDTO.PostListItemRes>> getPosts(
+            @PathVariable Long projectId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ApiResponse.success("게시글 목록 조회 성공",
+                postQueryService.getPosts(projectId, categoryId, page, size));
+    }
+
+    @GetMapping("/posts/{postId}")
+    @Operation(summary = "게시글 상세 조회")
+    public ApiResponse<PostResDTO.PostDetailRes> getPostDetail(
+            @PathVariable Long postId
+    ) {
+        return ApiResponse.success("게시글 상세 조회 성공",
+                postQueryService.getPostDetail(postId));
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    @Operation(summary = "게시글 삭제")
+    public ApiResponse<Void> deletePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal Long userId
+    ) {
+        postCommandService.deletePost(postId, userId);
+        return ApiResponse.success("게시글이 삭제되었습니다.");
+    }
+
+    /*--첨부파일--*/
+    @PostMapping(value = "/projects/{projectId}/files", consumes = "multipart/form-data")
+    @Operation(summary = "첨부파일 업로드")
+    public ApiResponse<PostResDTO.FileUploadRes> uploadFile(
+            @PathVariable Long projectId,
+            @AuthenticationPrincipal Long userId,
+            @RequestPart("file") MultipartFile file
+    ) {
+        return ApiResponse.success(201, "파일이 성공적으로 업로드되었습니다.",
+                postCommandService.uploadFile(projectId, userId, file));
+    }
+
+    @DeleteMapping("/files/{fileId}")
+    @Operation(summary = "첨부파일 삭제")
+    public ApiResponse<Void> deleteFile(
+            @PathVariable Long fileId,
+            @AuthenticationPrincipal Long userId
+    ) {
+        postCommandService.deleteFile(fileId, userId);
+        return ApiResponse.success("파일이 삭제되었습니다.");
+    }
+
 }

@@ -20,4 +20,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findTop3ByProject_IdAndTypeOrderByCreatedAtDesc(
             Long projectId, String type
     );
+
+    //프로젝트 내의 모든 게시물 가져옵니당
+    Page<Post> findAllByProject_IdOrderByCreatedAtDesc(
+            Long projectId, Pageable pageable
+    );
 }
