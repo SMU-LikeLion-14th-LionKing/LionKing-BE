@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.LionKing.Teamply.domain.auth.dto.request.EmailVerificationReq.SendCodeReq;
+import com.LionKing.Teamply.domain.auth.dto.request.EmailVerificationReq.VerifyCodeReq;
+import com.LionKing.Teamply.domain.auth.service.command.EmailService;
+
 @Tag(name = "Auth", description = "회원가입 / 로그인 / 토큰 재발급 / 로그아웃 / 마이페이지(내 정보, 비밀번호 변경) API")
 @RestController
 @RequestMapping("/api/auth")
@@ -28,6 +32,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthCommandService authCommandService;
+    private final EmailService emailService;
+
+    @Operation(summary = "비밀번호 재설정 - 인증 코드 발송", description = "입력한 이메일로 6자리 인증 코드를 발송합니다. (3분 만료)")
+    @PostMapping("/password/send-code")
+    public ApiResponse<Void> sendVerificationCode(@Valid @RequestBody SendCodeReq request) {
+        emailService.sendVerificationCode(request.getEmail());
+        return ApiResponse.success("인증 코드가 이메일로 발송되었습니다.");
+    }
+
+    @Operation(summary = "비밀번호 재설정 - 인증 코드 검증", description = "이메일과 인증 코드가 유효한지 검사합니다.")
+    @PostMapping("/password/verify-code")
+    public ApiResponse<Void> verifyCode(@Valid @RequestBody VerifyCodeReq request) {
+        emailService.verifyCode(request.getEmail(), request.getCode());
+        return ApiResponse.success("인증 코드가 확인되었습니다.");
+    }
 
     @Operation(summary = "회원가입", description = "이름, 이메일, 비밀번호로 회원가입합니다.")
     @PostMapping("/signup")
