@@ -35,6 +35,10 @@ jwt:
   access-token-expiration: 1800000
   refresh-token-expiration: 1209600000
 
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

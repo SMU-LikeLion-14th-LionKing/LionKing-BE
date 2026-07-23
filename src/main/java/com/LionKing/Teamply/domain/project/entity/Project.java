@@ -36,6 +36,9 @@ public class Project extends BaseTimeEntity {
     @Column(name = "ai_progress_rate")
     private Float aiProgressRate;
 
+    @Column(name = "total_task_count")
+    private Integer totalTaskCount;
+
     @Builder
     public Project(String name, String projectType, String title, LocalDateTime deadline) {
         this.name = name;
@@ -44,6 +47,11 @@ public class Project extends BaseTimeEntity {
         this.deadline = deadline;
         this.progressRate = 0f;
         this.aiProgressRate = 0f;
+        this.totalTaskCount = 0;
+    }
+
+    public void updateTotalTaskCount(Integer count) {
+        this.totalTaskCount = count;
     }
 
     public void updateProgressRate(Float progressRate) {
@@ -52,5 +60,27 @@ public class Project extends BaseTimeEntity {
 
     public void updateAiProgressRate(Float aiProgressRate) {
         this.aiProgressRate = aiProgressRate;
+    }
+
+    public void calculateProgress(int confirmedTaskCount) {
+        float taskProgress = 0f;
+        if (this.totalTaskCount != null && this.totalTaskCount > 0) {
+            taskProgress = ((float) confirmedTaskCount / this.totalTaskCount) * 100f;
+        }
+
+        float scheduleProgress = 0f;
+        if (this.getCreatedAt() != null && this.deadline != null) {
+            long totalDays = java.time.temporal.ChronoUnit.DAYS.between(this.getCreatedAt().toLocalDate(), this.deadline.toLocalDate());
+            long elapsedDays = java.time.temporal.ChronoUnit.DAYS.between(this.getCreatedAt().toLocalDate(), java.time.LocalDate.now());
+
+            if (totalDays > 0) {
+                // Ensure elapsedDays doesn't exceed totalDays or fall below 0
+                elapsedDays = Math.max(0, Math.min(elapsedDays, totalDays));
+                scheduleProgress = ((float) elapsedDays / totalDays) * 100f;
+            }
+        }
+
+        // 작업 진행도 70%, 일정 진행도 30% 반영
+        this.progressRate = (taskProgress * 0.7f) + (scheduleProgress * 0.3f);
     }
 }
