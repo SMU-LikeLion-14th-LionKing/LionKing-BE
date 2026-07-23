@@ -11,6 +11,8 @@ public class ProjectResDTO {
     }
 
     public record ProjectGetRes(
+            Long id,
+            String name,
             String title,
             LocalDateTime deadline
     ){

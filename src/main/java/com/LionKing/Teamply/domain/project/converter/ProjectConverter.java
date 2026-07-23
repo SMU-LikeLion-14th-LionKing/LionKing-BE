@@ -26,6 +26,8 @@ public class ProjectConverter {
 
     public static ProjectResDTO.ProjectGetRes toProjectGetRes(Project project) {
         return new ProjectResDTO.ProjectGetRes(
+                project.getId(),
+                project.getName(),
                 project.getTitle(),
                 project.getDeadline()
         );
