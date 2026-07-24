@@ -9,6 +9,8 @@ import com.LionKing.Teamply.domain.post.repository.PostReactionRepository;
 import com.LionKing.Teamply.domain.post.repository.PostRepository;
 import com.LionKing.Teamply.domain.user.entity.User;
 import com.LionKing.Teamply.domain.user.repository.UserRepository;
+import com.LionKing.Teamply.domain.post.entity.ReactionType;
+import com.LionKing.Teamply.domain.project.repository.ProjectMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class ReactionCommandService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostReactionRepository postReactionRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     public void putReaction(Long userId, Long postId, ReactionRequest request) {
         User user = userRepository.findById(userId)
@@ -46,6 +49,16 @@ public class ReactionCommandService {
         // 진행률 갱신 로직 (PostType이 '작업'인 경우)
         if ("작업".equals(post.getType())) {
             com.LionKing.Teamply.domain.project.entity.Project project = post.getProject();
+            
+            // 만장일치 체크: 해당 작업의 확인완료(CONFIRMED) 개수와 팀 전체 멤버 수 비교
+            int confirmedCountForPost = postReactionRepository.countByPostIdAndReactionType(post.getId(), ReactionType.CONFIRMED);
+            long teamMemberCount = projectMemberRepository.countByProjectId(project.getId());
+            
+            if (confirmedCountForPost >= teamMemberCount && !Boolean.TRUE.equals(post.getIsCompleted())) {
+                post.markAsCompleted();
+                postRepository.save(post);
+            }
+
             int confirmedCount = postRepository.countConfirmedTasksByProjectId(project.getId());
             project.calculateProgress(confirmedCount);
         }
