@@ -1,10 +1,14 @@
 package com.LionKing.Teamply.domain.post.entity;
 
+import com.LionKing.Teamply.domain.meeting.entity.MeetingMinute;
 import com.LionKing.Teamply.domain.project.entity.Project;
 import com.LionKing.Teamply.domain.user.entity.User;
 import com.LionKing.Teamply.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,6 +55,15 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "external_url", length = 512)
     private String externalUrl;
+
+    /*-- 자식 엔티티 (Cascade 삭제용) --*/
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attachment> attachments = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MeetingMinute> meetingMinutes = new ArrayList<>();
 
     /*--제목/본문 수정 --*/
     public void updateContent(String title, String content) {
