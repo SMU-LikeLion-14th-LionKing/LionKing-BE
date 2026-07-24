@@ -18,7 +18,7 @@ import com.LionKing.Teamply.domain.project.exception.ProjectErrorCode;
 import com.LionKing.Teamply.domain.project.exception.ProjectException;
 import com.LionKing.Teamply.global.apiPayload.code.GeneralErrorCode;
 import com.LionKing.Teamply.global.apiPayload.exception.handler.CustomException;
-
+import com.LionKing.Teamply.domain.meeting.repository.MeetingMinuteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +31,10 @@ public class PostCommandServiceImpl implements PostCommandService {
 
     private final PostRepository postRepository;
     private final AttachmentRepository attachmentRepository;
-    private final com.LionKing.Teamply.domain.post.repository.PostReactionRepository postReactionRepository;
-    private final com.LionKing.Teamply.domain.comment.repository.CommentRepository commentRepository;
     private final FileStorageService fileStorageService;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final MeetingMinuteRepository meetingMinuteRepository;
 
     @Override
     public PostResDTO.NoticeCreateRes createNotice(Long projectId, Long userId, PostReqDTO.NoticeCreateReq req) {
@@ -121,16 +120,11 @@ public class PostCommandServiceImpl implements PostCommandService {
         Post post = findPost(postId);
         validateAuthor(post, userId);
 
-        if ("회의록".equals(post.getType()) || "투표".equals(post.getType())) {
-            throw new PostException(PostErrorCode.POST_INVALID_TYPE);
-        }
-
-        // 1. 연관된 댓글, 반응, 첨부파일 삭제
-        commentRepository.deleteAllByPost_Id(post.getId());
-        postReactionRepository.deleteAllByPost_Id(post.getId());
+        // 1. 연관된 회의록 먼저 삭제 (FK 제약조건 방지)
+        meetingMinuteRepository.deleteByPost_Id(post.getId());
+        // 2. 첨부파일 삭제
         attachmentRepository.deleteAllByPost_Id(post.getId());
-        
-        // 2. 게시글 삭제
+        // 3. 게시글 삭제
         postRepository.delete(post);
     }
 
