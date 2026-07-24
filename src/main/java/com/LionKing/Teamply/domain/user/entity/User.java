@@ -54,7 +54,11 @@ public class User extends BaseTimeEntity {
         if (career != null) this.career = career;
     }
 
-    // 비밀번호 변경 시 사용
+
+    public void clearProfileImage() {
+        this.profileImageUrl = null;
+    }
+
     public void changePassword(String encodedPassword) {
         this.password = encodedPassword;
     }
