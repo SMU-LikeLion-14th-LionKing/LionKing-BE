@@ -1,31 +1,14 @@
 package com.LionKing.Teamply.domain.user.service.command;
 
 import com.LionKing.Teamply.domain.user.dto.request.ChangePasswordRequest;
-import com.LionKing.Teamply.domain.user.entity.User;
-import com.LionKing.Teamply.domain.user.exception.UserErrorCode;
-import com.LionKing.Teamply.domain.user.exception.UserException;
-import com.LionKing.Teamply.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.LionKing.Teamply.domain.user.dto.response.UserResponse;
+import org.springframework.web.multipart.MultipartFile;
 
-@Service
-@RequiredArgsConstructor
-public class UserCommandService {
+public interface UserCommandService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    void changePassword(Long userId, ChangePasswordRequest request);
 
-    @Transactional
-    public void changePassword(Long userId, ChangePasswordRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    UserResponse.ProfileImageUpdateRes updateProfileImage(Long userId, MultipartFile image);
 
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new UserException(UserErrorCode.PASSWORD_MISMATCH);
-        }
-
-        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
-    }
+    void deleteProfileImage(Long userId);
 }

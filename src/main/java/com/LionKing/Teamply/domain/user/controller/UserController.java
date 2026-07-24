@@ -9,12 +9,18 @@ import com.LionKing.Teamply.domain.user.service.command.UserCommandService;
 import com.LionKing.Teamply.domain.user.service.query.UserActivityQueryService;
 import com.LionKing.Teamply.domain.user.service.query.UserQueryService;
 import com.LionKing.Teamply.global.common.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Encoding;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Auth", description = "회원가입 / 로그인 / 토큰 재발급 / 로그아웃 / 마이페이지(내 정보, 비밀번호 변경) API")
 @io.swagger.v3.oas.annotations.responses.ApiResponses({
@@ -40,25 +46,31 @@ public class UserController {
         return ApiResponse.success("내 정보 조회 성공", userQueryService.getMyInfo(userId));
     }
 
-    @Operation(summary = "비밀번호 변경 (로그인 후)", description = "현재 비밀번호를 확인한 뒤 새로운 비밀번호로 변경합니다.")
-    @PatchMapping("/password")
-    public ApiResponse<Void> changePassword(
+    @Operation(summary = "프로필 사진 변경", description = "마이페이지에서 내 프로필 사진을 업로드/변경합니다.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = @Schema(type = "object", requiredProperties = {"image"}),
+                    encoding = @Encoding(name = "image", contentType = "image/png, image/jpeg")
+            )
+    )
+    @PatchMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<UserResponse.ProfileImageUpdateRes> updateProfileImage(
             @AuthenticationPrincipal Long userId,
-            @Valid @RequestBody ChangePasswordRequest request
+            @Parameter(description = "업로드할 프로필 이미지 파일", required = true)
+            @RequestPart("image") MultipartFile image
     ) {
-        userCommandService.changePassword(userId, request);
-        return ApiResponse.success("비밀번호가 성공적으로 변경되었습니다.");
+        return ApiResponse.success("프로필 사진 변경 성공",
+                userCommandService.updateProfileImage(userId, image));
     }
 
-    @Operation(summary = "나의 활동 내역 조회", description = "로그인한 사용자가 작성한 게시글 등 활동 내역을 페이지 단위로 조회합니다.")
-    @GetMapping("/activities")
-    public ApiResponse<ActivityResponse.ActivityPage> getMyActivities(
-            @AuthenticationPrincipal Long userId,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+    @Operation(summary = "프로필 사진 삭제", description = "마이페이지에서 내 프로필 사진을 기본 이미지로 되돌립니다.")
+    @DeleteMapping("/profile-image")
+    public ApiResponse<Void> deleteProfileImage(
+            @AuthenticationPrincipal Long userId
     ) {
-        return ApiResponse.success("나의 활동 내역 조회 성공",
-                userActivityQueryService.getMyActivities(userId, page, size));
+        userCommandService.deleteProfileImage(userId);
+        return ApiResponse.success("프로필 사진 삭제 성공");
     }
 
     @Operation(summary = "AI 피드백 기록 조회", description = "로그인한 사용자의 AI 피드백 이력을 페이지 단위로 조회합니다.")

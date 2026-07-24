@@ -24,4 +24,10 @@ public class UserResponse {
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
     }
+
+    public record ProfileImageUpdateRes(
+            Long userId,
+            @JsonProperty("profile_image_url") String profileImageUrl
+    ) {
+    }
 }
