@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Poll (투표)", description = "투표 생성, 상세/결과 조회, 투표하기 및 상태 변경 API")
 @io.swagger.v3.oas.annotations.responses.ApiResponses({
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "생성 성공", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "POLL404_1: 투표를 찾을 수 없습니다.", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "POLL404_2: 투표 선택지를 찾을 수 없습니다.", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "POLL400_1: 이미 마감된 투표입니다.", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
