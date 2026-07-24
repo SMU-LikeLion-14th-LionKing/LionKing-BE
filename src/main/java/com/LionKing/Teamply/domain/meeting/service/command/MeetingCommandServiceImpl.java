@@ -36,6 +36,9 @@ public class MeetingCommandServiceImpl implements MeetingCommandService {
     private final MeetingAttendeeRepository meetingAttendeeRepository;
     private final ActionItemRepository actionItemRepository;
     private final PostRepository postRepository;
+    private final com.LionKing.Teamply.domain.comment.repository.CommentRepository commentRepository;
+    private final com.LionKing.Teamply.domain.post.repository.PostReactionRepository postReactionRepository;
+    private final com.LionKing.Teamply.domain.post.repository.AttachmentRepository attachmentRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
 
@@ -99,6 +102,9 @@ public class MeetingCommandServiceImpl implements MeetingCommandService {
         Post post = meetingMinute.getPost();
 
         // 1. 연관 데이터 삭제
+        commentRepository.deleteAllByPost_Id(post.getId());
+        postReactionRepository.deleteAllByPost_Id(post.getId());
+        attachmentRepository.deleteAllByPost_Id(post.getId());
         actionItemRepository.deleteAllByMeetingMinuteId(meetingMinute.getId());
         meetingAttendeeRepository.deleteAllByMeetingMinuteId(meetingMinute.getId());
 

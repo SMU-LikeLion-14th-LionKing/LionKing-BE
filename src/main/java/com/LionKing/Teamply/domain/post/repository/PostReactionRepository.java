@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface PostReactionRepository extends JpaRepository<PostReaction, Long> {
     Optional<PostReaction> findByPostAndUser(Post post, User user);
     int countByPostIdAndReactionType(Long postId, com.LionKing.Teamply.domain.post.entity.ReactionType reactionType);
+    void deleteAllByPost_Id(Long postId);
 }
