@@ -119,12 +119,6 @@ public class PostCommandServiceImpl implements PostCommandService {
     public void deletePost(Long postId, Long userId) {
         Post post = findPost(postId);
         validateAuthor(post, userId);
-
-        // 1. 연관된 회의록 먼저 삭제 (FK 제약조건 방지)
-        meetingMinuteRepository.deleteByPost_Id(post.getId());
-        // 2. 첨부파일 삭제
-        attachmentRepository.deleteAllByPost_Id(post.getId());
-        // 3. 게시글 삭제
         postRepository.delete(post);
     }
 
