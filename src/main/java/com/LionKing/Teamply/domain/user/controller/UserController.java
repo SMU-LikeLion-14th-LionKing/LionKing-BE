@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "회원가입 / 로그인 / 토큰 재발급 / 로그아웃 / 마이페이지(내 정보, 비밀번호 변경) API")
 @io.swagger.v3.oas.annotations.responses.ApiResponses({
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "생성 성공", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "USER404: 존재하지 않는 사용자 정보입니다.", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "USER400_1: 기존 비밀번호가 일치하지 않거나, 새 비밀번호 형식이 올바르지 않습니다.", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class))),
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "USER400_2: 잘못된 페이징 파라미터입니다.", content = @io.swagger.v3.oas.annotations.media.Content(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = com.LionKing.Teamply.global.common.ApiResponse.class)))
