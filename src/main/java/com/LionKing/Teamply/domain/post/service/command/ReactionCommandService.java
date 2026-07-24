@@ -63,7 +63,8 @@ public class ReactionCommandService {
             }
 
             int confirmedCount = postRepository.countConfirmedTasksByProjectId(project.getId());
-            project.calculateProgress(confirmedCount);
+            long actualTaskCount = postRepository.countByProjectIdAndType(project.getId(), "작업");
+            project.calculateProgress(confirmedCount, (int) actualTaskCount);
         }
     }
 }

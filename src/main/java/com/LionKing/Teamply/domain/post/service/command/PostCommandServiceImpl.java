@@ -58,12 +58,18 @@ public class PostCommandServiceImpl implements PostCommandService {
 
         Post post = PostConverter.toTask(req, project, user);
         Post savedPost = postRepository.save(post);
-
+        
         if (req.attachments() != null) {
             req.attachments().forEach(a ->
                     attachmentRepository.save(PostConverter.toAttachment(a.fileUrl(), a.fileType(), savedPost))
             );
         }
+
+        postRepository.flush();
+        int confirmedCount = postRepository.countConfirmedTasksByProjectId(project.getId());
+        long actualTaskCount = postRepository.countByProjectIdAndType(project.getId(), "작업");
+        project.calculateProgress(confirmedCount, (int) actualTaskCount);
+
         return PostConverter.toPostCreateRes(savedPost);
     }
 
@@ -119,7 +125,18 @@ public class PostCommandServiceImpl implements PostCommandService {
     public void deletePost(Long postId, Long userId) {
         Post post = findPost(postId);
         validateAuthor(post, userId);
+        
+        Project project = post.getProject();
+        String type = post.getType();
+
         postRepository.delete(post);
+        postRepository.flush();
+
+        if ("작업".equals(type)) {
+            int confirmedCount = postRepository.countConfirmedTasksByProjectId(project.getId());
+            long actualTaskCount = postRepository.countByProjectIdAndType(project.getId(), "작업");
+            project.calculateProgress(confirmedCount, (int) actualTaskCount);
+        }
     }
 
     /*--첨부파일 업로드--*/
