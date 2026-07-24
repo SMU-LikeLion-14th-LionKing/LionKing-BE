@@ -1,14 +1,11 @@
 package com.LionKing.Teamply.domain.meeting.entity;
 
-import com.LionKing.Teamply.domain.post.entity.Attachment;
 import com.LionKing.Teamply.domain.post.entity.Post;
 import com.LionKing.Teamply.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -39,15 +36,6 @@ public class MeetingMinute extends BaseTimeEntity {
     private String discussion;
 
     @Column(name = "undecided_items", columnDefinition = "TEXT")
-    /*-- 자식 엔티티 (Cascade 삭제용) --*/
-    @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Attachment> attachments = new ArrayList<>();
-
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private MeetingMinute meetingMinute;
-
-    /*--제목/본문 수정 --*/
     private String undecidedItems;
 
     public void updateMeeting(String meetingTitle, LocalDateTime meetingDate, String rawContent) {
