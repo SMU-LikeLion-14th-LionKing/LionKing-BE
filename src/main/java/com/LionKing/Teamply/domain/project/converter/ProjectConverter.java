@@ -29,7 +29,11 @@ public class ProjectConverter {
                 project.getId(),
                 project.getName(),
                 project.getTitle(),
-                project.getDeadline()
+                project.getProjectType(),
+                project.getDeadline(),
+                project.getProgressRate(),
+                project.getAiProgressRate(),
+                project.getTotalTaskCount()
         );
     }
 
