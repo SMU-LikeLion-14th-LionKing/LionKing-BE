@@ -45,6 +45,8 @@ public class ReactionCommandService {
                     .build();
             postReactionRepository.save(newReaction);
         }
+        
+        postReactionRepository.flush(); // 방금 넣은 리액션을 DB에 즉시 반영해야 이후 count 쿼리가 정확함
 
         // 진행률 갱신 로직 (PostType이 '작업'인 경우)
         if ("작업".equals(post.getType())) {
@@ -57,10 +59,12 @@ public class ReactionCommandService {
             if (confirmedCountForPost >= teamMemberCount && !Boolean.TRUE.equals(post.getIsCompleted())) {
                 post.markAsCompleted();
                 postRepository.save(post);
+                postRepository.flush(); // isCompleted 값을 DB에 즉시 반영
             }
 
             int confirmedCount = postRepository.countConfirmedTasksByProjectId(project.getId());
-            project.calculateProgress(confirmedCount);
+            long actualTaskCount = postRepository.countByProjectIdAndType(project.getId(), "작업");
+            project.calculateProgress(confirmedCount, (int) actualTaskCount);
         }
     }
 }

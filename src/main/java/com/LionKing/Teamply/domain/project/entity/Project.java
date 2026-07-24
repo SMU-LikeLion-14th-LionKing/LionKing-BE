@@ -62,10 +62,20 @@ public class Project extends BaseTimeEntity {
         this.aiProgressRate = aiProgressRate;
     }
 
-    public void calculateProgress(int confirmedTaskCount) {
+    public void calculateProgress(int confirmedTaskCount, int actualTaskCount) {
         float taskProgress = 0f;
+        int effectiveTotalTaskCount = 0;
+
         if (this.totalTaskCount != null && this.totalTaskCount > 0) {
-            taskProgress = ((float) confirmedTaskCount / this.totalTaskCount) * 100f;
+            effectiveTotalTaskCount = this.totalTaskCount;
+        }
+
+        if (actualTaskCount > effectiveTotalTaskCount) {
+            effectiveTotalTaskCount = actualTaskCount;
+        }
+
+        if (effectiveTotalTaskCount > 0) {
+            taskProgress = ((float) confirmedTaskCount / effectiveTotalTaskCount) * 100f;
         }
 
         float scheduleProgress = 0f;
