@@ -14,11 +14,7 @@ public class ProjectResDTO {
             Long id,
             String name,
             String title,
-            String projectType,
-            LocalDateTime deadline,
-            Float progressRate,
-            Float aiProgressRate,
-            Integer totalTaskCount
+            LocalDateTime deadline
     ){
     }
 
