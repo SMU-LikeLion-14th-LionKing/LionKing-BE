@@ -68,8 +68,8 @@ public class MeetingCommandServiceImpl implements MeetingCommandService {
     }
 
     @Override
-    public MeetingResDTO.MeetingUpdateRes updateMeetingMinute(Long projectId, Long meetingMinuteId, MeetingReqDTO.MeetingUpdateReq req) {
-        MeetingMinute meetingMinute = meetingMinuteRepository.findById(meetingMinuteId)
+    public MeetingResDTO.MeetingUpdateRes updateMeetingMinute(Long projectId, Long postId, MeetingReqDTO.MeetingUpdateReq req) {
+        MeetingMinute meetingMinute = meetingMinuteRepository.findByPostId(postId)
                 .orElseThrow(() -> new MeetingException(MeetingErrorCode.MEETING_NOT_FOUND));
 
         // 소속 프로젝트 검증
@@ -88,8 +88,8 @@ public class MeetingCommandServiceImpl implements MeetingCommandService {
     }
 
     @Override
-    public void deleteMeetingMinute(Long projectId, Long meetingMinuteId) {
-        MeetingMinute meetingMinute = meetingMinuteRepository.findById(meetingMinuteId)
+    public void deleteMeetingMinute(Long projectId, Long postId) {
+        MeetingMinute meetingMinute = meetingMinuteRepository.findByPostId(postId)
                 .orElseThrow(() -> new MeetingException(MeetingErrorCode.MEETING_NOT_FOUND));
 
         if (!meetingMinute.getPost().getProject().getId().equals(projectId)) {
@@ -99,8 +99,8 @@ public class MeetingCommandServiceImpl implements MeetingCommandService {
         Post post = meetingMinute.getPost();
 
         // 1. 연관 데이터 삭제
-        actionItemRepository.deleteAllByMeetingMinuteId(meetingMinuteId);
-        meetingAttendeeRepository.deleteAllByMeetingMinuteId(meetingMinuteId);
+        actionItemRepository.deleteAllByMeetingMinuteId(meetingMinute.getId());
+        meetingAttendeeRepository.deleteAllByMeetingMinuteId(meetingMinute.getId());
 
         // 2. 본문 및 게시글 삭제
         meetingMinuteRepository.delete(meetingMinute);

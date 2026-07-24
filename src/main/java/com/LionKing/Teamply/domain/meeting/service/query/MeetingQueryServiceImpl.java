@@ -28,16 +28,16 @@ public class MeetingQueryServiceImpl implements MeetingQueryService {
     private final ActionItemRepository actionItemRepository;
 
     @Override
-    public MeetingResDTO.MeetingGetRes getMeetingMinute(Long projectId, Long meetingMinuteId) {
-        MeetingMinute meetingMinute = meetingMinuteRepository.findById(meetingMinuteId)
+    public MeetingResDTO.MeetingGetRes getMeetingMinute(Long projectId, Long postId) {
+        MeetingMinute meetingMinute = meetingMinuteRepository.findByPostId(postId)
                 .orElseThrow(() -> new MeetingException(MeetingErrorCode.MEETING_NOT_FOUND));
 
         if (!meetingMinute.getPost().getProject().getId().equals(projectId)) {
             throw new ProjectException(ProjectErrorCode.PROJECT_FORBIDDEN);
         }
 
-        List<MeetingAttendee> attendees = meetingAttendeeRepository.findAllByMeetingMinuteId(meetingMinuteId);
-        List<ActionItem> actionItems = actionItemRepository.findAllByMeetingMinuteId(meetingMinuteId);
+        List<MeetingAttendee> attendees = meetingAttendeeRepository.findAllByMeetingMinuteId(meetingMinute.getId());
+        List<ActionItem> actionItems = actionItemRepository.findAllByMeetingMinuteId(meetingMinute.getId());
 
         return MeetingConverter.toMeetingGetRes(meetingMinute, attendees, actionItems);
     }

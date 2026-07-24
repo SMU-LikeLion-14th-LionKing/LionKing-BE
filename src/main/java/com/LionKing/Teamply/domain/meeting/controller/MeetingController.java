@@ -40,33 +40,33 @@ public class MeetingController {
     }
 
     @Operation(summary = "회의록 상세 조회", description = "회의록 본문, 참석자, AI가 추출한 할 일 목록을 함께 조회합니다.")
-    @GetMapping("/{meetingId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<MeetingResDTO.MeetingGetRes>> getMeetingMinute(
             @PathVariable Long projectId,
-            @PathVariable Long meetingId
+            @PathVariable Long postId
     ) {
-        MeetingResDTO.MeetingGetRes response = meetingQueryService.getMeetingMinute(projectId, meetingId);
+        MeetingResDTO.MeetingGetRes response = meetingQueryService.getMeetingMinute(projectId, postId);
         return ResponseEntity.ok(ApiResponse.success(200, "회의록 상세 조회 성공", response));
     }
 
     @Operation(summary = "회의록 수정", description = "회의록의 내용 및 참석자를 수정합니다.")
-    @PatchMapping("/{meetingId}")
+    @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<MeetingResDTO.MeetingUpdateRes>> updateMeetingMinute(
             @PathVariable Long projectId,
-            @PathVariable Long meetingId,
+            @PathVariable Long postId,
             @RequestBody MeetingReqDTO.MeetingUpdateReq request
     ) {
-        MeetingResDTO.MeetingUpdateRes response = meetingCommandService.updateMeetingMinute(projectId, meetingId, request);
+        MeetingResDTO.MeetingUpdateRes response = meetingCommandService.updateMeetingMinute(projectId, postId, request);
         return ResponseEntity.ok(ApiResponse.success(200, "회의록 수정 완료", response));
     }
 
     @Operation(summary = "회의록 삭제", description = "회의록과 관련된 모든 정보를 삭제합니다.")
-    @DeleteMapping("/{meetingId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deleteMeetingMinute(
             @PathVariable Long projectId,
-            @PathVariable Long meetingId
+            @PathVariable Long postId
     ) {
-        meetingCommandService.deleteMeetingMinute(projectId, meetingId);
+        meetingCommandService.deleteMeetingMinute(projectId, postId);
         return ResponseEntity.ok(ApiResponse.success(200, "회의록 삭제 완료", null));
     }
 }
