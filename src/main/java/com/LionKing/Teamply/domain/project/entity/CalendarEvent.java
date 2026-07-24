@@ -34,15 +34,19 @@ public class CalendarEvent {
     @Column(name = "event_date")
     private LocalDateTime eventDate;
 
+    @Column(name = "deadline")
+    private LocalDateTime deadLine;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public CalendarEvent(Project project, String eventType, String title, LocalDateTime eventDate) {
+    public CalendarEvent(Project project, String eventType, String title, LocalDateTime eventDate, LocalDateTime deadLine) {
         this.project = project;
         this.eventType = eventType;
         this.title = title;
         this.eventDate = eventDate;
+        this.deadLine = deadLine;
     }
 }

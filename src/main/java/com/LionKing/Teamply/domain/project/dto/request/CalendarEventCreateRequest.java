@@ -11,6 +11,9 @@ public record CalendarEventCreateRequest(
         String title,
 
         @JsonProperty("event_date")
-        LocalDateTime eventDate
+        LocalDateTime eventDate,
+
+        @JsonProperty("deadline")
+        LocalDateTime deadLine
 ) {
 }

@@ -9,12 +9,16 @@ public record CalendarEventCreateResponse(
         Long scheduleId,
 
         @JsonProperty("created_at")
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        @JsonProperty("deadline")
+        LocalDateTime deadLine
 ) {
     public static CalendarEventCreateResponse from(CalendarEvent event) {
         return new CalendarEventCreateResponse(
                 event.getId(),
-                event.getCreatedAt()
+                event.getCreatedAt(),
+                event.getDeadLine()
         );
     }
 }

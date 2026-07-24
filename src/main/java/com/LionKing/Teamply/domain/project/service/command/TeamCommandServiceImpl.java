@@ -85,6 +85,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
                 .title(request.title())
                 .eventType(request.eventType())
                 .eventDate(request.eventDate())
+                .deadLine(request.deadLine())
                 .build();
         calendarEventRepository.save(event);
         return CalendarEventCreateResponse.from(event);
