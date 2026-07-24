@@ -11,6 +11,6 @@ public record ProjectSelectResponse(
         String teamName
 ) {
     public static ProjectSelectResponse from(Project project) {
-        return new ProjectSelectResponse(project.getId(), project.getName());
+        return new ProjectSelectResponse(project.getId(), project.getTeamName());
     }
 }

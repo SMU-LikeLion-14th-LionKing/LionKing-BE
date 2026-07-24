@@ -10,11 +10,21 @@ public class ProjectResDTO {
     ){
     }
 
-    public record ProjectGetRes(
+    public record ProjectListRes(
             Long id,
-            String name,
+            String teamName
+    ){
+    }
+
+    public record ProjectSummaryRes(
+            Long id,
+            String teamName,
             String title,
-            LocalDateTime deadline
+            String projectType,
+            LocalDateTime deadline,
+            Float progressRate,
+            Float aiProgressRate,
+            Integer totalTaskCount
     ){
     }
 

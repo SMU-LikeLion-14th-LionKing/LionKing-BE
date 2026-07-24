@@ -17,7 +17,7 @@ public record ProjectResponse(
     public static ProjectResponse of(Project project, String myRole) {
         return new ProjectResponse(
                 project.getId(),
-                project.getName(),
+                project.getTeamName(),
                 project.getProjectType(),
                 project.getTitle(),
                 project.getDeadline(),
