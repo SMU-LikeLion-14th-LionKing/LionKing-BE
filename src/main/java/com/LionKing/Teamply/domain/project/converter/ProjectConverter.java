@@ -10,11 +10,11 @@ public class ProjectConverter {
 
     public static Project toProject(ProjectReqDTO.ProjectCreateReq req) {
         return Project.builder()
-                .name(req.name())
+                .teamName(req.name())
                 .projectType(req.projectType())
                 .title(req.title())
                 .deadline(req.deadline())
-                .build(); // progressRate, aiProgressRate는 엔티티 빌더에서 0f로 초기화됨
+                .build();
     }
 
     public static ProjectResDTO.ProjectCreateRes toProjectCreateRes(Project project) {
@@ -24,18 +24,29 @@ public class ProjectConverter {
         );
     }
 
-    public static ProjectResDTO.ProjectGetRes toProjectGetRes(Project project) {
-        return new ProjectResDTO.ProjectGetRes(
+    public static ProjectResDTO.ProjectListRes toProjectListRes(Project project) {
+        return new ProjectResDTO.ProjectListRes(
                 project.getId(),
-                project.getName(),
-                project.getTitle(),
-                project.getDeadline()
+                project.getTeamName()
         );
     }
 
-    public static List<ProjectResDTO.ProjectGetRes> toProjectGetResList(List<Project> projectList) {
+    public static ProjectResDTO.ProjectSummaryRes toProjectSummaryRes(Project project) {
+        return new ProjectResDTO.ProjectSummaryRes(
+                project.getId(),
+                project.getTeamName(),
+                project.getTitle(),
+                project.getProjectType(),
+                project.getDeadline(),
+                project.getProgressRate(),
+                project.getAiProgressRate(),
+                project.getTotalTaskCount()
+        );
+    }
+
+    public static List<ProjectResDTO.ProjectListRes> toProjectListResList(List<Project> projectList) {
         return projectList.stream()
-                .map(ProjectConverter::toProjectGetRes)
+                .map(ProjectConverter::toProjectListRes)
                 .toList();
     }
 }

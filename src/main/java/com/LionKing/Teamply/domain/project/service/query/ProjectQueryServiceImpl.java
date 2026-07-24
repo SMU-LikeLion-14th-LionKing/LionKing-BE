@@ -23,20 +23,20 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     private final ProjectMemberRepository projectMemberRepository;
 
     @Override
-    public ProjectResDTO.ProjectGetRes getProject(Long projectId) {
+    public ProjectResDTO.ProjectSummaryRes getProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectException(ProjectErrorCode.PROJECT_NOT_FOUND));
 
-        return ProjectConverter.toProjectGetRes(project);
+        return ProjectConverter.toProjectSummaryRes(project);
     }
 
     @Override
-    public List<ProjectResDTO.ProjectGetRes> getProjects(Long userId) {
+    public List<ProjectResDTO.ProjectListRes> getProjects(Long userId) {
         // ProjectMemberRepository를 통해 유저가 속한 멤버 목록을 가져온 후 프로젝트들로 변환
         List<Project> projectList = projectMemberRepository.findByUserId(userId).stream()
                 .map(ProjectMember::getProject)
                 .toList();
         
-        return ProjectConverter.toProjectGetResList(projectList);
+        return ProjectConverter.toProjectListResList(projectList);
     }
 }

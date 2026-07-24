@@ -37,7 +37,7 @@ public class UserActivityQueryServiceImpl implements UserActivityQueryService {
                         .map(p -> ActivityResponse.ActivityItem.builder()
                                 .type(p.getType() != null ? p.getType() : "POST")
                                 .title(p.getTitle())
-                                .projectName(p.getProject() != null ? p.getProject().getName() : null)
+                                .projectName(p.getProject() != null ? p.getProject().getTeamName() : null)
                                 .createdAt(p.getCreatedAt())
                                 .build())
                         .toList())

@@ -34,19 +34,19 @@ public class ProjectController {
 
     @GetMapping("/projects/{projectId}/summary")
     @Operation(summary = "프로젝트 정보 조회", description = "내 프로젝트 관련 정보들을 조회합니다.")
-    public ApiResponse<ProjectResDTO.ProjectGetRes> getProject(
+    public ApiResponse<ProjectResDTO.ProjectSummaryRes> getProject(
             @PathVariable Long projectId
     ){
-        ProjectResDTO.ProjectGetRes projectGetRes = projectQueryService.getProject(projectId);
-        return ApiResponse.success("프로젝트 조회 성공", projectGetRes);
+        ProjectResDTO.ProjectSummaryRes projectSummaryRes = projectQueryService.getProject(projectId);
+        return ApiResponse.success("프로젝트 조회 성공", projectSummaryRes);
     }
 
     @GetMapping("/projects")
     @Operation(summary = "프로젝트 목록 조회", description = "내 프로젝트 목록들을 조회합니다.")
-    public ApiResponse<List<ProjectResDTO.ProjectGetRes>> getProjects(
+    public ApiResponse<List<ProjectResDTO.ProjectListRes>> getProjects(
             @AuthenticationPrincipal Long userId
     ) {
-        List<ProjectResDTO.ProjectGetRes> projects = projectQueryService.getProjects(userId);
+        List<ProjectResDTO.ProjectListRes> projects = projectQueryService.getProjects(userId);
         return ApiResponse.success("프로젝트 목록 조회 성공", projects);
     }
 }

@@ -20,13 +20,13 @@ public class Project extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, length = 255)
-    private String name; // 팀명
+    private String teamName; // 팀명
 
     @Column(name = "project_type", length = 255)
     private String projectType; // 프로젝트 분야
 
     @Column(length = 255)
-    private String title; // 프로젝트 주제
+    private String title; // 팀페이지
 
     private LocalDateTime deadline;
 
@@ -40,8 +40,8 @@ public class Project extends BaseTimeEntity {
     private Integer totalTaskCount;
 
     @Builder
-    public Project(String name, String projectType, String title, LocalDateTime deadline) {
-        this.name = name;
+    public Project(String teamName, String projectType, String title, LocalDateTime deadline) {
+        this.teamName = teamName;
         this.projectType = projectType;
         this.title = title;
         this.deadline = deadline;

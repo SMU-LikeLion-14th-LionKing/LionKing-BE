@@ -25,7 +25,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     public ProjectMemberInviteResponse inviteMember(Long projectId, ProjectMemberInviteRequest request) {
         Project project = getProjectOrThrow(projectId);
 
-        if (!project.getName().equals(request.teamName())) {
+        if (!project.getTeamName().equals(request.teamName())) {
             throw new IllegalArgumentException("팀 이름이 일치하지 않습니다.");
         }
 
