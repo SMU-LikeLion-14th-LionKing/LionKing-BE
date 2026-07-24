@@ -14,14 +14,17 @@ public record CalendarEventResponse(
         String title,
 
         @JsonProperty("schedule_date")
-        LocalDateTime scheduleDate
+        LocalDateTime scheduleDate,
+
+        LocalDateTime deadline
 ) {
     public static CalendarEventResponse from(CalendarEvent event) {
         return new CalendarEventResponse(
                 event.getId(),
                 event.getEventType(),
                 event.getTitle(),
-                event.getEventDate()
+                event.getEventDate(),
+                event.getDeadLine()
         );
     }
 }
