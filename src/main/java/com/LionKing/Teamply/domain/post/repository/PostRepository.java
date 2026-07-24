@@ -29,7 +29,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByUser_Id(Long userId, Pageable pageable);
 
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT p.id) FROM Post p JOIN PostReaction pr ON p.id = pr.post.id " +
-           "WHERE p.project.id = :projectId AND p.type = '작업' AND pr.reactionType = 'CONFIRMED'")
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p.id) FROM Post p " +
+           "WHERE p.project.id = :projectId AND p.type = '작업' AND p.isCompleted = true")
     int countConfirmedTasksByProjectId(@org.springframework.data.repository.query.Param("projectId") Long projectId);
 }

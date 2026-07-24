@@ -57,6 +57,10 @@ public class Post extends BaseTimeEntity {
     @Column(name = "external_url", length = 512)
     private String externalUrl;
 
+    @Column(name = "is_completed")
+    @Builder.Default
+    private Boolean isCompleted = false;
+
     /*-- 자식 엔티티 (Cascade 삭제용) --*/
     @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -77,6 +81,11 @@ public class Post extends BaseTimeEntity {
         if (content != null) {
             this.content = content;
         }
+    }
+
+    /*--작업 완료 처리--*/
+    public void markAsCompleted() {
+        this.isCompleted = true;
     }
 
     /*--작성자 검증 --*/

@@ -17,6 +17,8 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Pr
     // 특정 프로젝트의 팀원 목록 (팀원 설정 화면)
     List<ProjectMember> findByProjectId(Long projectId);
 
+    long countByProjectId(Long projectId);
+
     // 특정 프로젝트에 특정 유저가 이미 속해있는지 확인
     Optional<ProjectMember> findByUserAndProject(User user, Project project);
 
