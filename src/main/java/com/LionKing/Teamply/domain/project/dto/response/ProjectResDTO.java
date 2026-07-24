@@ -12,13 +12,13 @@ public class ProjectResDTO {
 
     public record ProjectListRes(
             Long id,
-            String name
+            String teamName
     ){
     }
 
     public record ProjectSummaryRes(
             Long id,
-            String name,
+            String teamName,
             String title,
             String projectType,
             LocalDateTime deadline,
